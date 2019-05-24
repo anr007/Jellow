@@ -1,0 +1,8 @@
+.gradle/
+.idea/
+app/build/
+app/.idea/
+app/app.iml
+captures/
+JellowCommunicatorApp.iml
+local.properties
