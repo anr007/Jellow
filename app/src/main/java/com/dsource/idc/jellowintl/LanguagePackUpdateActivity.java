@@ -9,6 +9,12 @@ import com.dsource.idc.jellowintl.packageUpdate.ProgressReceiver;
 import com.dsource.idc.jellowintl.packageUpdate.UpdateManager;
 import com.dsource.idc.jellowintl.packageUpdate.ConnectionUtils;
 
+import static com.dsource.idc.jellowintl.utility.Analytics.isAnalyticsActive;
+import static com.dsource.idc.jellowintl.utility.Analytics.resetAnalytics;
+import static com.dsource.idc.jellowintl.utility.Analytics.startMeasuring;
+import static com.dsource.idc.jellowintl.utility.Analytics.stopMeasuring;
+import static com.dsource.idc.jellowintl.utility.Analytics.validatePushId;
+
 public class LanguagePackUpdateActivity extends BaseActivity implements ProgressReceiver{
 
     UpdateManager updateManager;
@@ -70,7 +76,21 @@ public class LanguagePackUpdateActivity extends BaseActivity implements Progress
     protected void onResume() {
         super.onResume();
         setVisibleAct(LanguagePackUpdateActivity.class.getSimpleName());
+        if(!isAnalyticsActive()){
+            resetAnalytics(this, getSession().getCaregiverNumber().substring(1));
+        }
+        startMeasuring();
     }
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Check if pushId is older than 24 hours (86400000 millisecond).
+        // If yes then create new pushId (user session)
+        // If no then do not create new pushId instead user existing and
+        // current session time is saved.
+        long sessionTime = validatePushId(getSession().getSessionCreatedAt());
+        getSession().setSessionCreatedAt(sessionTime);
+        stopMeasuring("LanguagePackUpdateActivity");
+    }
 }

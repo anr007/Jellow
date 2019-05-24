@@ -40,6 +40,8 @@ public class BaseActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if(getNonMenuClass().contains(getVisibleAct()))
+            return false;
         super.onCreateOptionsMenu(menu);
         if(getLevelClass().contains(getVisibleAct()))
             getMenuInflater().inflate(R.menu.menu_main_with_search, menu);
@@ -186,8 +188,12 @@ public class BaseActivity extends AppCompatActivity{
     private String getLevelClass() {
         return MainActivity.class.getSimpleName() + "," +
             LevelTwoActivity.class.getSimpleName() + "," +
-                LevelThreeActivity.class.getSimpleName() + "," +
-                    SequenceActivity.class.getSimpleName();
+            LevelThreeActivity.class.getSimpleName() + "," +
+            SequenceActivity.class.getSimpleName();
+    }
+
+    private String getNonMenuClass() {
+        return UserRegistrationActivity.class.getSimpleName();
     }
 
     public String getVisibleAct() {
